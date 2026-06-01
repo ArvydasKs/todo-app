@@ -1,6 +1,6 @@
 services:
   app:
-    buikd: .
+    build: .
     ports:
       - "8000:8000"
     environment:
