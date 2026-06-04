@@ -5,9 +5,11 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Todo App")
 
+
 @app.get("/")
 def root():
     return {"message": "Todo API is running"}
+
 
 @app.get("/health")
 def health():
