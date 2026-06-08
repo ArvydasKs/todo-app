@@ -34,3 +34,47 @@ jobs:
       - name: Run Tests
         run: |
           PYTHONPATH=$PYTHONPATH:. pytest tests/ -v
+
+  docker-build-push:
+    runs-on: ubuntu-latest
+    needs: test-and-lint
+    if: github.base_ref == 'test'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/todo-app:latest .
+
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/todo-app:latest
+
+  deploy-test:
+    runs-on: ubuntu-latest
+    needs: docker-build-push
+    if: github.base_ref == 'test'
+    environment: test
+
+    steps:
+      - name: Deploy to Test VM
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST_TEST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY_TEST }}
+          script: |
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker pull ghcr.io/${{ github.repository_owner }}/todo-app:latest
+            docker stop todo-app || true
+            docker rm todo-app || true
+            docker run -d \
+              --name todo-app \
+              -p 8000:8000 \
+              -e DATABASE_URL=postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }} \
+              ghcr.io/${{ github.repository_owner }}/todo-app:latest
