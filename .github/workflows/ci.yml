@@ -71,6 +71,6 @@ jobs:
           docker rm todo-app || true
           docker run -d \
             --name todo-app \
-            -p 8000:8000 \
+            --network host \
             -e DATABASE_URL=postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }} \
             ghcr.io/arvydasks/todo-app:latest
