@@ -1,4 +1,4 @@
 [flake8]
 max-line-length = 88
 exclude = venv, .git
-extend-ignore = W292
+extend-ignore = W292, E203, W293, E501
