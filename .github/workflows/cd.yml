@@ -1,0 +1,30 @@
+name: CD Pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  deploy-prod:
+    runs-on: [self-hosted, todo-prod]
+    if: github.event.pull_request.merged == true
+    environment: production
+
+    steps:
+      - name: Set lowercase owner
+        run: echo "REPO_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Deploy to Prod VM
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker pull ghcr.io/${{ env.REPO_OWNER }}/todo-app:latest
+          docker stop todo-app || true
+          docker rm todo-app || true
+          docker run -d \
+            --name todo-app \
+            --network host \
+            -e DATABASE_URL=postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }} \
+            ghcr.io/${{ env.REPO_OWNER }}/todo-app:latest
