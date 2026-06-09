@@ -28,3 +28,5 @@ jobs:
             --network host \
             -e DATABASE_URL=postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }} \
             ghcr.io/${{ env.REPO_OWNER }}/todo-app:latest
+          sleep 5
+          docker exec todo-app alembic upgrade head
