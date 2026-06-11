@@ -17,9 +17,20 @@ function showMessage(elementId, message, type) {
 }
 
 async function register() {
-    const username = document.getElementById('reg-username').value;
-    const email = document.getElementById('reg-email').value;
+    const username = document.getElementById('reg-username').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
     const password = document.getElementById('reg-password').value;
+
+    if (!username || !email || !password) {
+        showMessage('auth-message', 'Užpildykite visus laukus', 'error');
+        return;
+    }
+
+    const emailParts = email.split('@');
+    if (emailParts.length !== 2 || !emailParts[1].includes('.')) {
+        showMessage('auth-message', 'Netinkamas el. pašto formatas', 'error');
+        return;
+    }
 
     const res = await fetch(`${API}/auth/register`, {
         method: 'POST',
@@ -29,6 +40,10 @@ async function register() {
 
     if (res.ok) {
         showMessage('auth-message', 'Registracija sėkminga! Prisijunkite.', 'success');
+        document.getElementById('reg-username').value = '';
+        document.getElementById('reg-email').value = '';
+        document.getElementById('reg-password').value = '';
+        showTab('login', { target: document.querySelector('.tabs .tab') });
     } else {
         const data = await res.json();
         showMessage('auth-message', data.detail || 'Klaida', 'error');
@@ -36,8 +51,13 @@ async function register() {
 }
 
 async function login() {
-    const username = document.getElementById('login-username').value;
+    const username = document.getElementById('login-username').value.trim();
     const password = document.getElementById('login-password').value;
+
+    if (!username || !password) {
+        showMessage('auth-message', 'Užpildykite visus laukus', 'error');
+        return;
+    }
 
     const res = await fetch(`${API}/auth/login`, {
         method: 'POST',
