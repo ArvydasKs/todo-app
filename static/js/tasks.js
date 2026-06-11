@@ -10,6 +10,8 @@ function logout() {
     window.location.href = '/static/login.html';
 }
 
+let tasksCache = [];
+
 function showTasksSection() {
     const authEl = document.getElementById('auth-section');
     if (authEl) authEl.style.display = 'none';
@@ -23,11 +25,35 @@ async function loadTasks() {
     });
 
     if (res.ok) {
-        const tasks = await res.json();
-        renderTasks(tasks);
+        tasksCache = await res.json();
+        applyFilter(document.getElementById('tasks-filter')?.value || 'created');
+        const filterEl = document.getElementById('tasks-filter');
+        if (filterEl && !filterEl._listenerAttached) {
+            filterEl.addEventListener('change', () => applyFilter(filterEl.value));
+            filterEl._listenerAttached = true;
+        }
     } else {
         logout();
     }
+}
+
+function applyFilter(criteria) {
+    if (!tasksCache) tasksCache = [];
+    let arr = tasksCache.slice();
+    if (criteria === 'due') {
+        arr.sort((a, b) => {
+            if (!a.due_date && !b.due_date) return 0;
+            if (!a.due_date) return 1;
+            if (!b.due_date) return -1;
+            return new Date(a.due_date) - new Date(b.due_date);
+        });
+    } else if (criteria === 'priority') {
+        const order = { high: 1, medium: 2, low: 3 };
+        arr.sort((a, b) => (order[a.priority] || 4) - (order[b.priority] || 4));
+    } else {
+        arr.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    }
+    renderTasks(arr);
 }
 
 function renderTasks(tasks) {

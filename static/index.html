@@ -10,8 +10,6 @@
 <div class="container">
     <h1>Užduočių tvarkyklė</h1>
 
-    <!-- Auth moved to a separate login page: /static/login.html -->
-
     <div id="tasks-section" style="display:none">
         <div class="tasks-box">
             <div class="tasks-header">
@@ -30,6 +28,14 @@
                 <button class="secondary" onclick="createTask()">Pridėti</button>
             </div>
             <div id="tasks-message"></div>
+            <div class="tasks-controls" style="display:flex; justify-content:flex-end; gap:10px; align-items:center; margin:10px 0;">
+                <label for="tasks-filter" style="font-size:0.9rem; color:#333;">Rūšiuoti pagal:</label>
+                <select id="tasks-filter">
+                    <option value="created" selected>Sukūrimo datą</option>
+                    <option value="due">Terminą</option>
+                    <option value="priority">Prioritetą</option>
+                </select>
+            </div>
             <div id="tasks-list"></div>
         </div>
     </div>
