@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo App</title>
+    <title>Užduočių tvarkyklė</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 <div class="container">
-    <h1>Todo App</h1>
+    <h1>Užduočių tvarkyklė</h1>
 
     <div id="auth-section">
         <div class="auth-box">
@@ -40,6 +40,7 @@
             <div class="task-form">
                 <input type="text" id="task-title" placeholder="Užduoties pavadinimas">
                 <input type="text" id="task-desc" placeholder="Aprašymas (neprivaloma)">
+                <input type="datetime-local" id="task-due" placeholder="Terminas (neprivaloma)">
                 <select id="task-priority">
                     <option value="low">Žemas</option>
                     <option value="medium" selected>Vidutinis</option>

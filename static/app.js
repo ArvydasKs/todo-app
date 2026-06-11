@@ -16,6 +16,24 @@ function showMessage(elementId, message, type) {
     setTimeout(() => el.innerHTML = '', 3000);
 }
 
+function pad(num) {
+    return String(num).padStart(2, '0');
+}
+
+function parseLocalDateTime(s) {
+    if (!s) return null;
+    const m = s.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?/);
+    if (!m) return null;
+    const [, y, mo, d, hh, mm, ss] = m;
+    return new Date(Number(y), Number(mo) - 1, Number(d), Number(hh), Number(mm), Number(ss || 0));
+}
+
+function formatDueDate(s) {
+    const dt = parseLocalDateTime(s);
+    if (!dt) return '';
+    return `${dt.getFullYear()}/${pad(dt.getMonth() + 1)}/${pad(dt.getDate())} ${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+}
+
 async function register() {
     const username = document.getElementById('reg-username').value.trim();
     const email = document.getElementById('reg-email').value.trim();
@@ -114,6 +132,7 @@ function renderTasks(tasks) {
                 <h3 style="${task.completed ? 'text-decoration:line-through' : ''}">${task.title}</h3>
                 ${task.description ? `<small>${task.description}</small><br>` : ''}
                 <small>Prioritetas: ${task.priority}</small>
+                    ${task.due_date ? `<br><small>Įvykdyti iki: ${formatDueDate(task.due_date)}</small>` : ''}
             </div>
             <div>
                 ${!task.completed ? `<button class="secondary" onclick="completeTask(${task.id})">✓</button>` : ''}
@@ -126,6 +145,7 @@ function renderTasks(tasks) {
 async function createTask() {
     const title = document.getElementById('task-title').value;
     const description = document.getElementById('task-desc').value;
+    const due_date = document.getElementById('task-due').value;
     const priority = document.getElementById('task-priority').value;
 
     if (!title) {
@@ -139,12 +159,13 @@ async function createTask() {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ title, description, priority })
+        body: JSON.stringify({ title, description, priority, due_date: due_date || null })
     });
 
     if (res.ok) {
         document.getElementById('task-title').value = '';
         document.getElementById('task-desc').value = '';
+        document.getElementById('task-due').value = '';
         loadTasks();
     } else {
         showMessage('tasks-message', 'Klaida kuriant užduotį', 'error');
