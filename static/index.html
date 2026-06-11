@@ -10,26 +10,7 @@
 <div class="container">
     <h1>Užduočių tvarkyklė</h1>
 
-    <div id="auth-section">
-        <div class="auth-box">
-            <div class="tabs">
-                <div class="tab active" onclick="showTab('login', event)">Prisijungti</div>
-                <div class="tab" onclick="showTab('register', event)">Registruotis</div>
-            </div>
-            <div id="login-form">
-                <input type="text" id="login-username" placeholder="Vartotojo vardas">
-                <input type="password" id="login-password" placeholder="Slaptažodis">
-                <button onclick="login()">Prisijungti</button>
-            </div>
-            <div id="register-form" style="display:none">
-                <input type="text" id="reg-username" placeholder="Vartotojo vardas">
-                <input type="email" id="reg-email" placeholder="El. paštas">
-                <input type="password" id="reg-password" placeholder="Slaptažodis">
-                <button onclick="register()">Registruotis</button>
-            </div>
-            <div id="auth-message"></div>
-        </div>
-    </div>
+    <!-- Auth moved to a separate login page: /static/login.html -->
 
     <div id="tasks-section" style="display:none">
         <div class="tasks-box">
@@ -53,6 +34,7 @@
         </div>
     </div>
 </div>
-<script src="/static/app.js"></script>
+<script src="/static/js/utils.js"></script>
+<script src="/static/js/tasks.js"></script>
 </body>
 </html>
