@@ -3,33 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo App</title>
+    <title>Užduočių tvarkyklė</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 <div class="container">
-    <h1>Todo App</h1>
-
-    <div id="auth-section">
-        <div class="auth-box">
-            <div class="tabs">
-                <div class="tab active" onclick="showTab('login', event)">Prisijungti</div>
-                <div class="tab" onclick="showTab('register', event)">Registruotis</div>
-            </div>
-            <div id="login-form">
-                <input type="text" id="login-username" placeholder="Vartotojo vardas">
-                <input type="password" id="login-password" placeholder="Slaptažodis">
-                <button onclick="login()">Prisijungti</button>
-            </div>
-            <div id="register-form" style="display:none">
-                <input type="text" id="reg-username" placeholder="Vartotojo vardas">
-                <input type="email" id="reg-email" placeholder="El. paštas">
-                <input type="password" id="reg-password" placeholder="Slaptažodis">
-                <button onclick="register()">Registruotis</button>
-            </div>
-            <div id="auth-message"></div>
-        </div>
-    </div>
+    <h1>Užduočių tvarkyklė</h1>
 
     <div id="tasks-section" style="display:none">
         <div class="tasks-box">
@@ -40,6 +19,7 @@
             <div class="task-form">
                 <input type="text" id="task-title" placeholder="Užduoties pavadinimas">
                 <input type="text" id="task-desc" placeholder="Aprašymas (neprivaloma)">
+                <input type="datetime-local" id="task-due" placeholder="Terminas (neprivaloma)">
                 <select id="task-priority">
                     <option value="low">Žemas</option>
                     <option value="medium" selected>Vidutinis</option>
@@ -48,10 +28,19 @@
                 <button class="secondary" onclick="createTask()">Pridėti</button>
             </div>
             <div id="tasks-message"></div>
+            <div class="tasks-controls" style="display:flex; justify-content:flex-end; gap:10px; align-items:center; margin:10px 0;">
+                <label for="tasks-filter" style="font-size:0.9rem; color:#333;">Rūšiuoti pagal:</label>
+                <select id="tasks-filter">
+                    <option value="created" selected>Sukūrimo datą</option>
+                    <option value="due">Terminą</option>
+                    <option value="priority">Prioritetą</option>
+                </select>
+            </div>
             <div id="tasks-list"></div>
         </div>
     </div>
 </div>
-<script src="/static/app.js"></script>
+<script src="/static/js/utils.js"></script>
+<script src="/static/js/tasks.js"></script>
 </body>
 </html>
