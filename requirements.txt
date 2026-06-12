@@ -12,3 +12,5 @@ aiofiles
 pytest
 httpx
 flake8
+pip-audit
+bandit
