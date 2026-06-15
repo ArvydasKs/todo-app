@@ -1,16 +1,13 @@
-name: CD Pipeline
+name: CD Production Pipeline
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-    types:
-      - closed
 
 jobs:
   deploy-prod:
     runs-on: [self-hosted, todo-prod]
-    if: github.event.pull_request.merged == true
     environment: production
 
     steps:
