@@ -7,7 +7,8 @@ client = TestClient(app)
 def test_root():
     response = client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"message": "Todo API is running"}
+    assert "text/html" in response.headers.get("content-type", "")
+    assert "<!DOCTYPE html" in response.text or "Todo App" in response.text
 
 
 def test_health():

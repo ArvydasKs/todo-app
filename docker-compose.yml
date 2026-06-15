@@ -5,6 +5,9 @@ services:
       - "8000:8000"
     environment:
       - DATABASE_URL=postgresql://todo_user:todo_password@db:5432/todo_db
+    volumes:
+      - .:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       db:
         condition: service_healthy

@@ -8,6 +8,9 @@ passlib[bcrypt]
 python-jose[cryptography]
 python-multipart
 alembic
+aiofiles
 pytest
 httpx
 flake8
+pip-audit
+bandit
