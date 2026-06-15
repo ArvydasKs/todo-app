@@ -1,0 +1,54 @@
+name: CD Test Pipeline
+
+on:
+  push:
+    branches:
+      - test
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  docker-build-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set lowercase owner
+        run: echo "REPO_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ env.REPO_OWNER }}/todo-app:latest .
+
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/${{ env.REPO_OWNER }}/todo-app:latest
+
+  deploy-test:
+    runs-on: [self-hosted, todo-test]
+    needs: docker-build-push
+    environment: test
+
+    steps:
+      - name: Set lowercase owner
+        run: echo "REPO_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Deploy
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker pull ghcr.io/${{ env.REPO_OWNER }}/todo-app:latest
+          docker stop todo-app || true
+          docker rm todo-app || true
+          docker run -d \
+            --name todo-app \
+            --network host \
+            -e DATABASE_URL=postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }} \
+            ghcr.io/${{ env.REPO_OWNER }}/todo-app:latest
+          sleep 5
+          docker exec todo-app alembic upgrade head
