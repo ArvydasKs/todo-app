@@ -219,3 +219,7 @@ __marimo__/
 
 # VSCode
 .vscode/
+
+# Test database
+test.db
+test_output.txt
