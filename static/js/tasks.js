@@ -32,6 +32,13 @@ async function loadTasks() {
             filterEl.addEventListener('change', () => applyFilter(filterEl.value));
             filterEl._listenerAttached = true;
         }
+        ['low', 'medium', 'high'].forEach(p => {
+            const el = document.getElementById(`filter-${p}`);
+            if (el && !el._listenerAttached) {
+                el.addEventListener('change', () => applyFilter(document.getElementById('tasks-filter')?.value || 'created'));
+                el._listenerAttached = true;
+            }
+        });
     } else {
         logout();
     }
@@ -39,7 +46,11 @@ async function loadTasks() {
 
 function applyFilter(criteria) {
     if (!tasksCache) tasksCache = [];
-    let arr = tasksCache.slice();
+    const activeFilters = ['low', 'medium', 'high'].filter(p => {
+        const el = document.getElementById(`filter-${p}`);
+        return el ? el.checked : true;
+    });
+    let arr = tasksCache.filter(t => activeFilters.includes(t.priority));
     if (criteria === 'due') {
         arr.sort((a, b) => {
             if (!a.due_date && !b.due_date) return 0;
@@ -64,20 +75,23 @@ function renderTasks(tasks) {
         return;
     }
 
-    list.innerHTML = tasks.map(task => `
-        <div class="task-item ${task.completed ? 'completed' : task.priority}">
+    const now = new Date();
+    list.innerHTML = tasks.map(task => {
+        const isOverdue = task.due_date && !task.completed && new Date(task.due_date) < now;
+        return `
+        <div class="task-item ${task.completed ? 'completed' : task.priority}${isOverdue ? ' overdue' : ''}">
             <div class="task-info">
                 <h3 style="${task.completed ? 'text-decoration:line-through' : ''}">${task.title}</h3>
                 ${task.description ? `<small>${task.description}</small><br>` : ''}
-                <small>Prioritetas: ${task.priority}</small>
-                    ${task.due_date ? `<br><small>Įvykdyti iki: ${formatDueDate(task.due_date)}</small>` : ''}
+                <small>Prioritetas: ${{ low: 'žemas', medium: 'vidutinis', high: 'aukštas' }[task.priority]}</small>
+                ${task.due_date ? `<br><small class="${isOverdue ? 'overdue-text' : ''}">Įvykdyti iki: ${formatDueDate(task.due_date)}${isOverdue ? ' ⚠ Vėluojama!' : ''}</small>` : ''}
             </div>
             <div>
                 ${!task.completed ? `<button class="secondary" onclick="completeTask(${task.id})">✓</button>` : ''}
                 <button class="danger" onclick="deleteTask(${task.id})">✕</button>
             </div>
-        </div>
-    `).join('');
+        </div>`;
+    }).join('');
 }
 
 async function createTask() {

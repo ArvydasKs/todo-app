@@ -28,13 +28,27 @@
                 <button class="secondary" onclick="createTask()">Pridėti</button>
             </div>
             <div id="tasks-message"></div>
-            <div class="tasks-controls" style="display:flex; justify-content:flex-end; gap:10px; align-items:center; margin:10px 0;">
-                <label for="tasks-filter" style="font-size:0.9rem; color:#333;">Rūšiuoti pagal:</label>
-                <select id="tasks-filter">
-                    <option value="created" selected>Sukūrimo datą</option>
-                    <option value="due">Terminą</option>
-                    <option value="priority">Prioritetą</option>
-                </select>
+            <div class="tasks-controls">
+                <div class="priority-filters">
+                    <span class="filter-label">Rodyti:</span>
+                    <label class="priority-filter-label low-label">
+                        <input type="checkbox" id="filter-low" checked> Žemas
+                    </label>
+                    <label class="priority-filter-label medium-label">
+                        <input type="checkbox" id="filter-medium" checked> Vidutinis
+                    </label>
+                    <label class="priority-filter-label high-label">
+                        <input type="checkbox" id="filter-high" checked> Aukštas
+                    </label>
+                </div>
+                <div class="sort-controls">
+                    <label for="tasks-filter" class="filter-label">Rūšiuoti pagal:</label>
+                    <select id="tasks-filter">
+                        <option value="created" selected>Sukūrimo datą</option>
+                        <option value="due">Terminą</option>
+                        <option value="priority">Prioritetą</option>
+                    </select>
+                </div>
             </div>
             <div id="tasks-list"></div>
         </div>
