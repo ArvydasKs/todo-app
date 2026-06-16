@@ -1,13 +1,13 @@
 let token = localStorage.getItem('token') || null;
 
 if (!token) {
-    window.location.href = '/static/login.html';
+    window.location.href = '/login';
 }
 
 function logout() {
     token = null;
     localStorage.removeItem('token');
-    window.location.href = '/static/login.html';
+    window.location.href = '/login';
 }
 
 let tasksCache = [];

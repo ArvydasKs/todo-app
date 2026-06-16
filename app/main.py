@@ -21,6 +21,16 @@ def root():
     return FileResponse("static/index.html")
 
 
+@app.get("/login")
+def login_page():
+    return FileResponse("static/login.html")
+
+
+@app.get("/categories")
+def categories_page():
+    return FileResponse("static/categories.html")
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
