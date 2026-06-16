@@ -49,6 +49,19 @@ class TaskOut(BaseModel):
         from_attributes = True
 
 
+class CategoryCreate(BaseModel):
+    name: str
+
+
+class CategoryOut(BaseModel):
+    id: int
+    name: str
+    owner_id: int
+
+    class Config:
+        from_attributes = True
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str

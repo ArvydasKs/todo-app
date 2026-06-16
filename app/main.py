@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from app.database import Base, engine
-from app.routers import users, tasks
+from app.routers import users, tasks, categories
 
 if engine:
     Base.metadata.create_all(bind=engine)
@@ -13,6 +13,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(users.router)
 app.include_router(tasks.router)
+app.include_router(categories.router)
 
 
 @app.get("/")
