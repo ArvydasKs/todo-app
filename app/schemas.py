@@ -25,6 +25,7 @@ class TaskCreate(BaseModel):
     description: Optional[str] = None
     priority: Optional[Priority] = Priority.medium
     due_date: Optional[datetime] = None
+    category_id: Optional[int] = None
 
 
 class TaskUpdate(BaseModel):
@@ -33,6 +34,20 @@ class TaskUpdate(BaseModel):
     completed: Optional[bool] = None
     priority: Optional[Priority] = None
     due_date: Optional[datetime] = None
+    category_id: Optional[int] = None
+
+
+class CategoryCreate(BaseModel):
+    name: str
+
+
+class CategoryOut(BaseModel):
+    id: int
+    name: str
+    owner_id: int
+
+    class Config:
+        from_attributes = True
 
 
 class TaskOut(BaseModel):
@@ -44,6 +59,8 @@ class TaskOut(BaseModel):
     due_date: Optional[datetime]
     created_at: datetime
     owner_id: int
+    category_id: Optional[int]
+    category: Optional[CategoryOut] = None
 
     class Config:
         from_attributes = True
