@@ -37,6 +37,19 @@ class TaskUpdate(BaseModel):
     category_id: Optional[int] = None
 
 
+class CategoryCreate(BaseModel):
+    name: str
+
+
+class CategoryOut(BaseModel):
+    id: int
+    name: str
+    owner_id: int
+
+    class Config:
+        from_attributes = True
+
+
 class TaskOut(BaseModel):
     id: int
     title: str
@@ -47,19 +60,7 @@ class TaskOut(BaseModel):
     created_at: datetime
     owner_id: int
     category_id: Optional[int]
-
-    class Config:
-        from_attributes = True
-
-
-class CategoryCreate(BaseModel):
-    name: str
-
-
-class CategoryOut(BaseModel):
-    id: int
-    name: str
-    owner_id: int
+    category: Optional[CategoryOut] = None
 
     class Config:
         from_attributes = True

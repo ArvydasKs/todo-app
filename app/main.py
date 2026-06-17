@@ -16,19 +16,21 @@ app.include_router(tasks.router)
 app.include_router(categories.router)
 
 
+_no_cache = {"Cache-Control": "no-store"}
+
 @app.get("/")
 def root():
-    return FileResponse("static/index.html")
+    return FileResponse("static/index.html", headers=_no_cache)
 
 
 @app.get("/login")
 def login_page():
-    return FileResponse("static/login.html")
+    return FileResponse("static/login.html", headers=_no_cache)
 
 
 @app.get("/categories")
 def categories_page():
-    return FileResponse("static/categories.html")
+    return FileResponse("static/categories.html", headers=_no_cache)
 
 
 @app.get("/health")
