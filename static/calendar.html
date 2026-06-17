@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalendorius</title>
+    <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+<body>
+<div class="container">
+    <h1>Užduočių tvarkyklė</h1>
+
+    <nav class="app-nav">
+        <a href="/" class="nav-link">Užduotys</a>
+        <a href="/categories" class="nav-link">Kategorijos</a>
+        <a href="/calendar" class="nav-link active">Kalendorius</a>
+    </nav>
+
+    <div class="tasks-box">
+        <div class="tasks-header">
+            <h2 id="calendar-title"></h2>
+            <div style="display:flex; gap:6px; align-items:center;">
+                <button class="secondary" onclick="prevMonth()">&#8249;</button>
+                <button class="secondary" onclick="nextMonth()">&#8250;</button>
+                <button class="danger" onclick="logout()">Atsijungti</button>
+            </div>
+        </div>
+        <div class="calendar-grid" id="calendar-grid"></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3 id="modal-title"></h3>
+            <button class="danger" onclick="closeModal()">&#10005;</button>
+        </div>
+        <div id="modal-body"></div>
+    </div>
+</div>
+
+<script src="/static/js/utils.js"></script>
+<script src="/static/js/calendar.js"></script>
+</body>
+</html>
