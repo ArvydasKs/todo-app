@@ -35,8 +35,10 @@ class Task(Base):
     due_date = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     owner_id = Column(Integer, ForeignKey("users.id"))
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
 
     owner = relationship("User", back_populates="tasks")
+    category = relationship("Category")
 
 
 class Category(Base):
