@@ -42,6 +42,9 @@ def delete_category(
     ).first()
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")
+    has_tasks = db.query(models.Task).filter(models.Task.category_id == category_id).first()
+    if has_tasks:
+        raise HTTPException(status_code=400, detail="Cannot delete category with assigned tasks")
     db.delete(category)
     db.commit()
     return {"detail": "Category deleted"}
