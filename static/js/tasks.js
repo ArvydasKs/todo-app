@@ -32,6 +32,11 @@ async function loadTasks() {
             filterEl.addEventListener('change', () => applyFilter(filterEl.value));
             filterEl._listenerAttached = true;
         }
+        const categoryFilterEl = document.getElementById('filter-category');
+        if (categoryFilterEl && !categoryFilterEl._listenerAttached) {
+            categoryFilterEl.addEventListener('change', () => applyFilter(document.getElementById('tasks-filter')?.value || 'created'));
+            categoryFilterEl._listenerAttached = true;
+        }
         ['low', 'medium', 'high'].forEach(p => {
             const el = document.getElementById(`filter-${p}`);
             if (el && !el._listenerAttached) {
@@ -50,7 +55,12 @@ function applyFilter(criteria) {
         const el = document.getElementById(`filter-${p}`);
         return el ? el.checked : true;
     });
-    let arr = tasksCache.filter(t => activeFilters.includes(t.priority));
+    const categoryFilter = document.getElementById('filter-category')?.value || '';
+    let arr = tasksCache.filter(t => {
+        const priorityMatch = activeFilters.includes(t.priority);
+        const categoryMatch = !categoryFilter || String(t.category_id) === categoryFilter;
+        return priorityMatch && categoryMatch;
+    });
     if (criteria === 'due') {
         arr.sort((a, b) => {
             if (!a.due_date && !b.due_date) return 0;
@@ -101,15 +111,30 @@ async function loadCategoriesForDropdown() {
     });
     if (!res.ok) return;
     const categories = await res.json();
-    const select = document.getElementById('task-category');
-    if (!select) return;
-    select.innerHTML = '<option value="">-- Kategorija (neprivaloma) --</option>';
-    categories.forEach(cat => {
-        const opt = document.createElement('option');
-        opt.value = cat.id;
-        opt.textContent = cat.name;
-        select.appendChild(opt);
-    });
+
+    const createSelect = document.getElementById('task-category');
+    if (createSelect) {
+        createSelect.innerHTML = '<option value="">-- Kategorija (neprivaloma) --</option>';
+        categories.forEach(cat => {
+            const opt = document.createElement('option');
+            opt.value = cat.id;
+            opt.textContent = cat.name;
+            createSelect.appendChild(opt);
+        });
+    }
+
+    const filterSelect = document.getElementById('filter-category');
+    if (filterSelect) {
+        const current = filterSelect.value;
+        filterSelect.innerHTML = '<option value="">Visos</option>';
+        categories.forEach(cat => {
+            const opt = document.createElement('option');
+            opt.value = cat.id;
+            opt.textContent = cat.name;
+            filterSelect.appendChild(opt);
+        });
+        filterSelect.value = current;
+    }
 }
 
 async function createTask() {
