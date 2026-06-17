@@ -10,6 +10,11 @@
 <div class="container">
     <h1>Užduočių tvarkyklė</h1>
 
+    <nav class="app-nav">
+        <a href="/" class="nav-link active">Užduotys</a>
+        <a href="/categories" class="nav-link">Kategorijos</a>
+    </nav>
+
     <div id="tasks-section" style="display:none">
         <div class="tasks-box">
             <div class="tasks-header">
@@ -24,6 +29,9 @@
                     <option value="low">Žemas</option>
                     <option value="medium" selected>Vidutinis</option>
                     <option value="high">Aukštas</option>
+                </select>
+                <select id="task-category">
+                    <option value="">-- Kategorija (neprivaloma) --</option>
                 </select>
                 <button class="secondary" onclick="createTask()">Pridėti</button>
             </div>
@@ -42,6 +50,10 @@
                     </label>
                 </div>
                 <div class="sort-controls">
+                    <label for="filter-category" class="filter-label">Kategorija:</label>
+                    <select id="filter-category">
+                        <option value="">Visos</option>
+                    </select>
                     <label for="tasks-filter" class="filter-label">Rūšiuoti pagal:</label>
                     <select id="tasks-filter">
                         <option value="created" selected>Sukūrimo datą</option>
@@ -54,7 +66,7 @@
         </div>
     </div>
 </div>
-<script src="/static/js/utils.js"></script>
-<script src="/static/js/tasks.js"></script>
+<script src="/static/js/utils.js?v=4"></script>
+<script src="/static/js/tasks.js?v=4"></script>
 </body>
 </html>

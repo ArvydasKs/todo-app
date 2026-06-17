@@ -1,13 +1,13 @@
 let token = localStorage.getItem('token') || null;
 
 if (!token) {
-    window.location.href = '/static/login.html';
+    window.location.href = '/login';
 }
 
 function logout() {
     token = null;
     localStorage.removeItem('token');
-    window.location.href = '/static/login.html';
+    window.location.href = '/login';
 }
 
 let tasksCache = [];
@@ -32,6 +32,11 @@ async function loadTasks() {
             filterEl.addEventListener('change', () => applyFilter(filterEl.value));
             filterEl._listenerAttached = true;
         }
+        const categoryFilterEl = document.getElementById('filter-category');
+        if (categoryFilterEl && !categoryFilterEl._listenerAttached) {
+            categoryFilterEl.addEventListener('change', () => applyFilter(document.getElementById('tasks-filter')?.value || 'created'));
+            categoryFilterEl._listenerAttached = true;
+        }
         ['low', 'medium', 'high'].forEach(p => {
             const el = document.getElementById(`filter-${p}`);
             if (el && !el._listenerAttached) {
@@ -50,7 +55,12 @@ function applyFilter(criteria) {
         const el = document.getElementById(`filter-${p}`);
         return el ? el.checked : true;
     });
-    let arr = tasksCache.filter(t => activeFilters.includes(t.priority));
+    const categoryFilter = document.getElementById('filter-category')?.value || '';
+    let arr = tasksCache.filter(t => {
+        const priorityMatch = activeFilters.includes(t.priority);
+        const categoryMatch = !categoryFilter || String(t.category_id) === categoryFilter;
+        return priorityMatch && categoryMatch;
+    });
     if (criteria === 'due') {
         arr.sort((a, b) => {
             if (!a.due_date && !b.due_date) return 0;
@@ -84,6 +94,7 @@ function renderTasks(tasks) {
                 <h3 style="${task.completed ? 'text-decoration:line-through' : ''}">${task.title}</h3>
                 ${task.description ? `<small>${task.description}</small><br>` : ''}
                 <small>Prioritetas: ${{ low: 'žemas', medium: 'vidutinis', high: 'aukštas' }[task.priority]}</small>
+                ${task.category ? `<br><small>Kategorija: ${task.category.name}</small>` : ''}
                 ${task.due_date ? `<br><small class="${isOverdue ? 'overdue-text' : ''}">Įvykdyti iki: ${formatDueDate(task.due_date)}${isOverdue ? ' ⚠ Vėluojama!' : ''}</small>` : ''}
             </div>
             <div>
@@ -94,11 +105,45 @@ function renderTasks(tasks) {
     }).join('');
 }
 
+async function loadCategoriesForDropdown() {
+    const res = await fetch(`${API}/categories/`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!res.ok) return;
+    const categories = await res.json();
+
+    const createSelect = document.getElementById('task-category');
+    if (createSelect) {
+        createSelect.innerHTML = '<option value="">-- Kategorija (neprivaloma) --</option>';
+        categories.forEach(cat => {
+            const opt = document.createElement('option');
+            opt.value = cat.id;
+            opt.textContent = cat.name;
+            createSelect.appendChild(opt);
+        });
+    }
+
+    const filterSelect = document.getElementById('filter-category');
+    if (filterSelect) {
+        const current = filterSelect.value;
+        filterSelect.innerHTML = '<option value="">Visos</option>';
+        categories.forEach(cat => {
+            const opt = document.createElement('option');
+            opt.value = cat.id;
+            opt.textContent = cat.name;
+            filterSelect.appendChild(opt);
+        });
+        filterSelect.value = current;
+    }
+}
+
 async function createTask() {
     const title = document.getElementById('task-title').value;
     const description = document.getElementById('task-desc').value;
     const due_date = document.getElementById('task-due').value;
     const priority = document.getElementById('task-priority').value;
+    const categoryVal = document.getElementById('task-category').value;
+    const category_id = categoryVal ? parseInt(categoryVal) : null;
 
     if (!title) {
         showMessage('tasks-message', 'Įveskite užduoties pavadinimą', 'error');
@@ -111,13 +156,14 @@ async function createTask() {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ title, description, priority, due_date: due_date || null })
+        body: JSON.stringify({ title, description, priority, due_date: due_date || null, category_id })
     });
 
     if (res.ok) {
         document.getElementById('task-title').value = '';
         document.getElementById('task-desc').value = '';
         document.getElementById('task-due').value = '';
+        document.getElementById('task-category').value = '';
         loadTasks();
     } else {
         showMessage('tasks-message', 'Klaida kuriant užduotį', 'error');
@@ -142,4 +188,5 @@ async function deleteTask(id) {
 
 document.addEventListener('DOMContentLoaded', () => {
     showTasksSection();
+    loadCategoriesForDropdown();
 });
