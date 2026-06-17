@@ -18,6 +18,7 @@ app.include_router(categories.router)
 
 _no_cache = {"Cache-Control": "no-store"}
 
+
 @app.get("/")
 def root():
     return FileResponse("static/index.html", headers=_no_cache)
