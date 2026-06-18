@@ -34,6 +34,11 @@ def categories_page():
     return FileResponse("static/categories.html", headers=_no_cache)
 
 
+@app.get("/calendar")
+def calendar_page():
+    return FileResponse("static/calendar.html", headers=_no_cache)
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
