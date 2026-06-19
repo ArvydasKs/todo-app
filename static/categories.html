@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kategorijos</title>
+    <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+<body>
+<div class="container">
+    <h1>Užduočių tvarkyklė</h1>
+
+    <nav class="app-nav">
+        <a href="/" class="nav-link">Užduotys</a>
+        <a href="/categories" class="nav-link active">Kategorijos</a>
+        <a href="/calendar" class="nav-link">Kalendorius</a>
+    </nav>
+
+    <div class="tasks-box">
+        <div class="tasks-header">
+            <h2>Mano kategorijos</h2>
+            <button class="danger" onclick="logout()">Atsijungti</button>
+        </div>
+        <div class="task-form">
+            <input type="text" id="category-name" placeholder="Kategorijos pavadinimas">
+            <button class="secondary" onclick="createCategory()">Pridėti</button>
+        </div>
+        <div id="categories-message"></div>
+        <div id="categories-list"></div>
+    </div>
+</div>
+<script src="/static/js/utils.js"></script>
+<script src="/static/js/categories.js"></script>
+</body>
+</html>
