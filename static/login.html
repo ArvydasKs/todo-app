@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prisijungimas</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/style.css?v=3">
+    <script src="/static/js/theme.js?v=1"></script>
     <script>if (localStorage.getItem('token')) window.location.replace('/');</script>
 </head>
 <body>
 <div class="container">
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()"></button>
     <h1>Prisijungimas</h1>
 
     <div id="auth-section">
