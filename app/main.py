@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.exceptions import HTTPException
 from app.database import Base, engine
 from app.routers import users, tasks, categories
 
@@ -17,6 +18,13 @@ app.include_router(categories.router)
 
 
 _no_cache = {"Cache-Control": "no-store"}
+
+
+@app.exception_handler(404)
+async def not_found_handler(request: Request, exc: HTTPException):
+    if request.url.path.startswith(("/auth", "/categories")):
+        return JSONResponse({"detail": "Not found"}, status_code=404)
+    return FileResponse("static/404.html", status_code=404)
 
 
 @app.get("/")
@@ -37,8 +45,3 @@ def categories_page():
 @app.get("/calendar")
 def calendar_page():
     return FileResponse("static/calendar.html", headers=_no_cache)
-
-
-@app.get("/health")
-def health():
-    return {"status": "ok"}
