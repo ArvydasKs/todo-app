@@ -1,0 +1,26 @@
+repos:
+  - repo: local
+    hooks:
+      - id: flake8
+        name: Run Lint
+        entry: flake8 app/ tests/
+        language: system
+        pass_filenames: false
+
+      - id: pytest
+        name: Run Tests
+        entry: bash -c "PYTHONPATH=. pytest tests/ -v"
+        language: system
+        pass_filenames: false
+
+      - id: pip-audit
+        name: Run pip-audit
+        entry: pip-audit
+        language: system
+        pass_filenames: false
+
+      - id: bandit
+        name: Run Bandit
+        entry: bandit -r app/
+        language: system
+        pass_filenames: false
