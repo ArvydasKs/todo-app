@@ -15,7 +15,7 @@ let tasksCache = [];
 let categoriesCache = [];
 
 const MONTH_NAMES = [
-    'Sausis', 'Vasaris', 'Kova', 'Balandis', 'Gegužė', 'Birželis',
+    'Sausis', 'Vasaris', 'Kovas', 'Balandis', 'Gegužė', 'Birželis',
     'Liepa', 'Rugpjūtis', 'Rugsėjis', 'Spalis', 'Lapkritis', 'Gruodis'
 ];
 const DAY_HEADERS = ['Pr', 'An', 'Tr', 'Kt', 'Pn', 'Št', 'Sk'];
