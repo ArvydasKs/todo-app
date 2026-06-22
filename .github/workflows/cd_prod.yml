@@ -23,6 +23,7 @@ jobs:
           docker run -d \
             --name todo-app \
             --network host \
+            --restart unless-stopped \
             -e DATABASE_URL=postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }} \
             ghcr.io/${{ env.REPO_OWNER }}/todo-app:latest
           sleep 5
