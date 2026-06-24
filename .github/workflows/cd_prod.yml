@@ -25,6 +25,7 @@ jobs:
             --network host \
             --restart unless-stopped \
             -e DATABASE_URL=postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }} \
+            -e RESEND_API_KEY=${{ secrets.RESEND_API_KEY }} \
             ghcr.io/${{ env.REPO_OWNER }}/todo-app:latest
           sleep 5
           docker exec todo-app alembic upgrade head
