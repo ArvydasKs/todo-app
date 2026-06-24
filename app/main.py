@@ -4,6 +4,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.exceptions import HTTPException
 from app.database import Base, engine
 from app.routers import users, tasks, categories
+from app.scheduler import start_scheduler
 
 if engine:
     Base.metadata.create_all(bind=engine)
@@ -15,6 +16,11 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(users.router)
 app.include_router(tasks.router)
 app.include_router(categories.router)
+
+
+@app.on_event("startup")
+def startup_event():
+    start_scheduler()
 
 
 _no_cache = {"Cache-Control": "no-store"}

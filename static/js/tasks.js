@@ -140,7 +140,8 @@ async function loadCategoriesForDropdown() {
 async function createTask() {
     const title = document.getElementById('task-title').value;
     const description = document.getElementById('task-desc').value;
-    const due_date = document.getElementById('task-due').value;
+    const rawDue = document.getElementById('task-due').value;
+    const due_date = rawDue ? new Date(rawDue).toISOString() : null;
     const priority = document.getElementById('task-priority').value;
     const categoryVal = document.getElementById('task-category').value;
     const category_id = categoryVal ? parseInt(categoryVal) : null;
@@ -156,7 +157,7 @@ async function createTask() {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ title, description, priority, due_date: due_date || null, category_id })
+        body: JSON.stringify({ title, description, priority, due_date, category_id })
     });
 
     if (res.ok) {

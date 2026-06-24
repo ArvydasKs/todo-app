@@ -19,6 +19,10 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    notify_overdue = Column(Boolean, default=False)
+    notify_upcoming = Column(Boolean, default=False)
+    notify_overdue_enabled_at = Column(DateTime(timezone=True), nullable=True)
+    notify_upcoming_enabled_at = Column(DateTime(timezone=True), nullable=True)
 
     tasks = relationship("Task", back_populates="owner")
     categories = relationship("Category", back_populates="owner")
@@ -36,6 +40,8 @@ class Task(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     owner_id = Column(Integer, ForeignKey("users.id"))
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+    overdue_notified = Column(Boolean, default=False)
+    upcoming_notified = Column(Boolean, default=False)
 
     owner = relationship("User", back_populates="tasks")
     category = relationship("Category")
