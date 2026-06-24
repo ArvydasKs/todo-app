@@ -67,3 +67,25 @@ def delete_account(
     db.delete(current_user)
     db.commit()
     return {"detail": "Account deleted"}
+
+
+@router.get("/settings", response_model=schemas.UserSettings)
+def get_settings(
+    current_user: models = Depends(auth.get_current_user)
+):
+    return current_user
+
+
+@router.patch("/settings", response_model=schemas.UserSettings)
+def update_settings(
+    settings: schemas.UserSettings,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_user)
+):
+    if settings.notify_overdue is not None:
+        current_user.notify_overdue = settings.notify_overdue
+    if settings.notify_upcoming is not None:
+        current_user.notify_upcoming = settings.notify_upcoming
+    db.commit()
+    db.refresh(current_user)
+    return current_user

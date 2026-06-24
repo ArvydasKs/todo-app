@@ -19,6 +19,8 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    notify_overdue = Column(Boolean, default=False)
+    notify_upcoming = Column(Boolean, default=False)
 
     tasks = relationship("Task", back_populates="owner")
     categories = relationship("Category", back_populates="owner")
