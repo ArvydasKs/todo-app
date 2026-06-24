@@ -26,7 +26,25 @@
             <button class="danger" onclick="logout()">Atsijungti</button>
         </div>
         <div id="settings-message"></div>
-        <button class="danger" onclick="deleteAccount()">Ištrinti paskyrą</button>
+
+        <div class="settings-group">
+            <span class="settings-group-label">Pranešimai</span>
+            <label class="settings-option">
+                <input type="checkbox" id="notify-upcoming">
+                <span>Pranešti apie artėjančius deadline'us</span>
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="notify-overdue">
+                <span>Pranešti apie praleistus deadline'us</span>
+            </label>
+        </div>
+
+        <div class="settings-divider"></div>
+
+        <div class="settings-group">
+            <span class="settings-group-label">Paskyra</span>
+            <button class="danger" onclick="deleteAccount()">Ištrinti paskyrą</button>
+        </div>
     </div>
 </div>
 <script src="/static/js/utils.js"></script>
