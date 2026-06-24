@@ -21,12 +21,6 @@ async function register() {
         return;
     }
 
-    const emailParts = email.split('@');
-    if (emailParts.length !== 2 || !emailParts[1].includes('.')) {
-        showMessage('auth-message', 'Netinkamas el. pašto formatas', 'error');
-        return;
-    }
-
     const res = await fetch(`${API}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

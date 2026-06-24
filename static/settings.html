@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nustatymai</title>
+    <link rel="stylesheet" href="/static/style.css?v=3">
+    <script src="/static/js/theme.js?v=1"></script>
+    <script>if (!localStorage.getItem('token')) window.location.replace('/login');</script>
+</head>
+<body>
+<div class="container">
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()"></button>
+    <h1>Užduočių tvarkyklė</h1>
+
+    <nav class="app-nav">
+        <a href="/" class="nav-link">Užduotys</a>
+        <a href="/categories" class="nav-link">Kategorijos</a>
+        <a href="/calendar" class="nav-link">Kalendorius</a>
+        <a href="/settings" class="nav-link active">Nustatymai</a>
+    </nav>
+
+    <div class="tasks-box">
+        <div class="tasks-header">
+            <h2>Paskyros nustatymai</h2>
+            <button class="danger" onclick="logout()">Atsijungti</button>
+        </div>
+        <div id="settings-message"></div>
+
+        <div class="settings-group">
+            <span class="settings-group-label">Pranešimai</span>
+            <label class="settings-option">
+                <input type="checkbox" id="notify-upcoming">
+                <span>Pranešti apie artėjančius deadline'us</span>
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="notify-overdue">
+                <span>Pranešti apie praleistus deadline'us</span>
+            </label>
+        </div>
+
+        <div class="settings-divider"></div>
+
+        <div class="settings-group">
+            <span class="settings-group-label">Paskyra</span>
+            <button class="danger" onclick="deleteAccount()">Ištrinti paskyrą</button>
+        </div>
+    </div>
+</div>
+<script src="/static/js/utils.js"></script>
+<script src="/static/js/settings.js"></script>
+</body>
+</html>

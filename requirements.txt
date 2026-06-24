@@ -18,3 +18,4 @@ httpx
 flake8
 pip-audit
 bandit
+email-validator

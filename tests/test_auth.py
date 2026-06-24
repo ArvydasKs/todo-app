@@ -1,3 +1,26 @@
+import pytest
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from app import models
+
+_TEST_URL = "sqlite:///./test.db"
+_engine = create_engine(_TEST_URL, connect_args={"check_same_thread": False})
+_Session = sessionmaker(bind=_engine)
+
+
+@pytest.fixture
+def db():
+    session = _Session()
+    try:
+        yield session
+    finally:
+        session.close()
+
+
+def _auth(token):
+    return {"Authorization": f"Bearer {token}"}
+
+
 def test_register(client):
     response = client.post("/auth/register", json={
         "username": "testuser",
@@ -83,7 +106,7 @@ def test_register_invalid_email_format(client):
         "email": "not-an-email",
         "password": "password"
     })
-    assert response.status_code == 400
+    assert response.status_code in (400, 422)
 
 
 def test_login_empty_fields(client):
@@ -98,3 +121,64 @@ def test_login_empty_fields(client):
         "password": ""
     })
     assert response.status_code in (400, 422)
+
+
+def test_delete_account_returns_200(client, auth_token):
+    response = client.delete("/auth/me", headers=_auth(auth_token))
+    assert response.status_code == 200
+    assert response.json() == {"detail": "Account deleted"}
+
+
+def test_delete_account_removes_user_from_db(client, auth_token, db):
+    client.delete("/auth/me", headers=_auth(auth_token))
+    user = db.query(models.User).filter(models.User.username == "testuser").first()
+    assert user is None
+
+
+def test_delete_account_cascades_tasks(client, auth_token, db):
+    client.post("/tasks/", json={"title": "Task 1", "priority": "low"}, headers=_auth(auth_token))
+    client.post("/tasks/", json={"title": "Task 2", "priority": "high"}, headers=_auth(auth_token))
+    client.delete("/auth/me", headers=_auth(auth_token))
+    assert db.query(models.Task).all() == []
+
+
+def test_delete_account_cascades_categories(client, auth_token, db):
+    client.post("/categories/", json={"name": "Work"}, headers=_auth(auth_token))
+    client.post("/categories/", json={"name": "Personal"}, headers=_auth(auth_token))
+    client.delete("/auth/me", headers=_auth(auth_token))
+    assert db.query(models.Category).all() == []
+
+
+def test_delete_account_no_token(client):
+    response = client.delete("/auth/me")
+    assert response.status_code == 401
+
+
+def test_delete_account_invalid_token(client):
+    response = client.delete("/auth/me", headers={"Authorization": "Bearer fake.token.here"})
+    assert response.status_code == 401
+
+
+def test_delete_account_login_fails_after(client, auth_token, registered_user):
+    client.delete("/auth/me", headers=_auth(auth_token))
+    response = client.post("/auth/login", data={
+        "username": registered_user["username"],
+        "password": registered_user["password"],
+    })
+    assert response.status_code == 401
+
+
+def test_delete_account_token_invalidated(client, auth_token):
+    client.delete("/auth/me", headers=_auth(auth_token))
+    response = client.get("/tasks/", headers=_auth(auth_token))
+    assert response.status_code == 401
+
+
+def test_delete_account_frees_username(client, auth_token):
+    client.delete("/auth/me", headers=_auth(auth_token))
+    response = client.post("/auth/register", json={
+        "username": "testuser",
+        "email": "new@example.com",
+        "password": "newpassword123",
+    })
+    assert response.status_code == 200
