@@ -20,6 +20,14 @@ class UserOut(BaseModel):
         from_attributes = True
     
 
+class UserSettings(BaseModel):
+    notify_overdue: Optional[bool] = None
+    notify_upcoming: Optional[bool] = None
+
+    class Config:
+        from_attributes = True
+
+
 class TaskCreate(BaseModel):
     title: str
     description: Optional[str] = None

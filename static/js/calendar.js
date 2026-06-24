@@ -53,7 +53,8 @@ function renderCalendar() {
     const tasksByDate = {};
     tasksCache.forEach(task => {
         if (!task.due_date) return;
-        const dateKey = task.due_date.substring(0, 10);
+        const dt = new Date(task.due_date);
+        const dateKey = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
         if (!tasksByDate[dateKey]) tasksByDate[dateKey] = [];
         tasksByDate[dateKey].push(task);
     });
