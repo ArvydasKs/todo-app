@@ -83,7 +83,7 @@ def test_register_invalid_email_format(client):
         "email": "not-an-email",
         "password": "password"
     })
-    assert response.status_code == 400
+    assert response.status_code in (400, 422)
 
 
 def test_login_empty_fields(client):

@@ -146,7 +146,9 @@ button.secondary:hover { background: #0b7dda; }
     background: transparent;
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
-    padding: 7px 16px;
+    padding: 7px 0;
+    width: 42px;
+    text-align: center;
     font-size: 1rem;
     border-radius: 20px;
     cursor: pointer;
