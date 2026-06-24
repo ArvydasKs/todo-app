@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kategorijos</title>
+    <title>Nustatymai</title>
     <link rel="stylesheet" href="/static/style.css?v=3">
     <script src="/static/js/theme.js?v=1"></script>
     <script>if (!localStorage.getItem('token')) window.location.replace('/login');</script>
@@ -15,25 +15,21 @@
 
     <nav class="app-nav">
         <a href="/" class="nav-link">Užduotys</a>
-        <a href="/categories" class="nav-link active">Kategorijos</a>
+        <a href="/categories" class="nav-link">Kategorijos</a>
         <a href="/calendar" class="nav-link">Kalendorius</a>
-        <a href="/settings" class="nav-link">Nustatymai</a>
+        <a href="/settings" class="nav-link active">Nustatymai</a>
     </nav>
 
     <div class="tasks-box">
         <div class="tasks-header">
-            <h2>Mano kategorijos</h2>
+            <h2>Paskyros nustatymai</h2>
             <button class="danger" onclick="logout()">Atsijungti</button>
         </div>
-        <div class="task-form">
-            <input type="text" id="category-name" placeholder="Kategorijos pavadinimas">
-            <button class="secondary" onclick="createCategory()">Pridėti</button>
-        </div>
-        <div id="categories-message"></div>
-        <div id="categories-list"></div>
+        <div id="settings-message"></div>
+        <button class="danger" onclick="deleteAccount()">Ištrinti paskyrą</button>
     </div>
 </div>
 <script src="/static/js/utils.js"></script>
-<script src="/static/js/categories.js"></script>
+<script src="/static/js/settings.js"></script>
 </body>
 </html>

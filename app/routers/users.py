@@ -51,3 +51,19 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db : Session = Depen
         raise HTTPException(status_code=401, detail="Invalid credentials")
     token = auth.create_access_token(data={"sub": user.username})
     return {"access_token": token, "token_type": "bearer"}  # nosec B105
+
+
+@router.delete("/me")
+def delete_account(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_user)
+):
+    db.query(models.Task).filter(
+        models.Task.owner_id == current_user.id
+    ).delete()
+    db.query(models.Category).filter(
+        models.Category.owner_id == current_user.id
+    ).delete()
+    db.delete(current_user)
+    db.commit()
+    return {"detail": "Account deleted"}
