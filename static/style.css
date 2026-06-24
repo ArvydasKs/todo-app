@@ -146,7 +146,9 @@ button.secondary:hover { background: #0b7dda; }
     background: transparent;
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
-    padding: 7px 16px;
+    padding: 7px 0;
+    width: 42px;
+    text-align: center;
     font-size: 1rem;
     border-radius: 20px;
     cursor: pointer;
@@ -367,6 +369,49 @@ html.dark input::-webkit-calendar-picker-indicator {
 .priority-text-low { color: #4CAF50; font-weight: 600; }
 .priority-text-medium { color: #ff9800; font-weight: 600; }
 .priority-text-high { color: #f44336; font-weight: 600; }
+
+/* Settings page */
+.settings-group {
+    margin: 16px 0;
+}
+
+.settings-group-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.settings-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    transition: background-color 0.15s;
+    margin-bottom: 4px;
+}
+
+.settings-option:hover { background: var(--bg-item); }
+
+.settings-option input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    accent-color: #4CAF50;
+}
+
+.settings-divider {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 8px 0;
+}
 
 /* 404 page */
 .error-box {

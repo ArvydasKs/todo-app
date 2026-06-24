@@ -45,3 +45,8 @@ def categories_page():
 @app.get("/calendar")
 def calendar_page():
     return FileResponse("static/calendar.html", headers=_no_cache)
+
+
+@app.get("/settings")
+def settings_page():
+    return FileResponse("static/settings.html", headers=_no_cache)
