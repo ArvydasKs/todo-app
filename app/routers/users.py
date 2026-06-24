@@ -3,6 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app import models, schemas, auth
+from datetime import datetime, timezone
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -83,9 +84,19 @@ def update_settings(
     current_user: models.User = Depends(auth.get_current_user)
 ):
     if settings.notify_overdue is not None:
+        if settings.notify_overdue and not current_user.notify_overdue:
+            current_user.notify_overdue_enabled_at = datetime.now(timezone.utc)
+        elif not settings.notify_overdue:
+            current_user.notify_overdue_enabled_at = None
         current_user.notify_overdue = settings.notify_overdue
+
     if settings.notify_upcoming is not None:
+        if settings.notify_upcoming and not current_user.notify_upcoming:
+            current_user.notify_upcoming_enabled_at = datetime.now(timezone.utc)
+        elif not settings.notify_upcoming:
+            current_user.notify_upcoming_enabled_at = None
         current_user.notify_upcoming = settings.notify_upcoming
+        
     db.commit()
     db.refresh(current_user)
     return current_user
